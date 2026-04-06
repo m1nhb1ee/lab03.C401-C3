@@ -1,0 +1,53 @@
+{
+  "test_type": "CHATBOT_BASELINE",
+  "provider": "openai",
+  "timestamp": "2026-04-06T16:22:34.713851",
+  "test_cases": 3,
+  "results": [
+    {
+      "success": true,
+      "query": "Tôi không hiểu con trỏ hoạt động như thế nào. Cho tôi ví dụ thực tế và giải thích chi tiết.",
+      "response": "Con trỏ là một khái niệm quan trọng trong lập trình C. Nó là một biến đặc biệt dùng để lưu trữ địa chỉ của một biến khác trong bộ nhớ. Để hiểu rõ hơn về con trỏ, chúng ta hãy đi qua một số điểm chính và một ví dụ cụ thể.\n\n### Các điểm chính về con trỏ:\n\n1. **Khai báo con trỏ**: \n   - Để khai báo một con trỏ, bạn sử dụng dấu `*`. Ví dụ, `int *p` là một khai báo con trỏ đến một biến kiểu `int`.\n\n2. **Gán địa chỉ cho con trỏ**:\n   - Sử dụng toán tử `&` (address-of) để lấy địa chỉ của một biến và gán cho con trỏ.\n   - Ví dụ: `p = &a;` với `a` là một biến kiểu `int`.\n\n3. **Lấy giá trị từ con trỏ**:\n   - Sử dụng toán tử `*` (dereference) để truy cập giá trị của biến mà con trỏ trỏ tới.\n   - Ví dụ: `*p` sẽ cho giá trị của biến `a` nếu `p` trỏ tới `a`.\n\n4. **Con trỏ và mảng**:\n   - Tên mảng khi sử dụng một mình (không chỉ số) là một con trỏ tới phần tử đầu tiên của mảng.\n\n### Ví dụ cụ thể:\n\n```c\n#include <stdio.h>\n\nint main() {\n    int a = 10;     // Khai báo một biến a kiểu int và gán giá trị 10.\n    int *p;         // Khai báo một con trỏ p tới kiểu int.\n\n    p = &a;         // Gán địa chỉ của a cho con trỏ p.\n\n    // In ra địa chỉ của a, địa chỉ được lưu trong p, và giá trị thông qua p\n    printf(\"Địa chỉ của biến a: %p\\n\", (void*)&a);\n    printf(\"Địa chỉ được lưu trong con trỏ p: %p\\n\", (void*)p);\n    printf(\"Giá trị của a thông qua con trỏ p: %d\\n\", *p);\n\n    // Thay đổi giá trị của a thông qua con trỏ p\n    *p = 20;\n    printf(\"Giá trị mới của a: %d\\n\", a);\n\n    return 0;\n}\n```\n\n### Giải thích:\n\n- `int a = 10;`: Tạo một biến `a` kiểu `int` với giá trị 10. Biến này có một địa chỉ cụ thể trong bộ nhớ.\n\n- `int *p;`: Khai báo một biến `p` là con trỏ tới kiểu `int`. Lúc này `p` chưa được gán địa chỉ cụ thể.\n\n- `p = &a;`: Gán địa chỉ của `a` cho `p`. Giờ `p` trỏ tới biến `a`.\n\n- `printf` đầu tiên in ra địa chỉ của `a` và địa chỉ lưu trong `p`, hai địa chỉ này sẽ giống nhau.\n\n- `printf` thứ ba sử dụng `*p` để dereference, lấy giá trị của `a` thông qua `p`.\n\n- `*p = 20;`: Đổi giá trị của `a` thông qua con trỏ `p`. Bây giờ `a` có giá trị 20, điều này minh họa cách con trỏ có thể thay đổi giá trị của biến mà nó trỏ tới.\n\nHy vọng điều này giúp bạn hiểu hơn về cách con trỏ hoạt động trong C!",
+      "latency_ms": 7547,
+      "tokens": {
+        "prompt_tokens": 128,
+        "completion_tokens": 768,
+        "total_tokens": 896
+      },
+      "provider": "openai",
+      "type": "CHATBOT_BASELINE",
+      "scenario_id": 1,
+      "difficulty": "Medium"
+    },
+    {
+      "success": true,
+      "query": "Tôi nộp bài muộn 2 ngày. Bài của tôi sẽ bị trừ bao nhiêu điểm?",
+      "response": "Điểm bị trừ cho việc nộp bài muộn thường phụ thuộc vào quy định cụ thể của giảng viên hoặc của khóa học mà bạn đang tham gia. Không có một quy định chung cho tất cả các khóa học về vấn đề này. \n\nThông thường, một số khóa học có quy định rõ về việc trừ điểm cho từng ngày nộp muộn. Chẳng hạn, có thể sẽ trừ 10% cho mỗi ngày nộp muộn. Tuy nhiên, điều này có thể khác nhau rất nhiều, và một số giảng viên có thể linh hoạt hơn, cho phép nộp bài muộn mà không trừ điểm trong trường hợp có lý do chính đáng.\n\nBạn nên kiểm tra lại các hướng dẫn từ giảng viên hoặc tài liệu hướng dẫn của khóa học để biết chính xác quy định cho trường hợp cụ thể của mình. Nếu không thấy thông tin cụ thể, hãy liên hệ trực tiếp với giảng viên để được giải đáp.",
+      "latency_ms": 2360,
+      "tokens": {
+        "prompt_tokens": 128,
+        "completion_tokens": 201,
+        "total_tokens": 329
+      },
+      "provider": "openai",
+      "type": "CHATBOT_BASELINE",
+      "scenario_id": 2,
+      "difficulty": "Easy"
+    },
+    {
+      "success": true,
+      "query": "Làm thế nào để tôi tránh buffer overflow khi dùng strings? Cho ví dụ sai và đúng.",
+      "response": "Buffer overflow là một lỗi xảy ra khi có quá nhiều dữ liệu được ghi vào một vùng bộ nhớ cụ thể mà không đủ chỗ chứa. Điều này có thể dẫn đến các hành vi không mong muốn, lỗi chương trình hoặc điểm yếu bảo mật. \n\nĐể tránh buffer overflow khi làm việc với chuỗi trong C, bạn cần chú ý một số điểm sau:\n\n1. **Sử dụng hàm an toàn**: Thay vì sử dụng các hàm không an toàn như `strcpy`, `sprintf`, bạn nên sử dụng các hàm an toàn như `strncpy`, `snprintf`.\n\n2. **Kiểm tra kích thước**: Luôn tính toán và kiểm tra kích thước của vùng bộ nhớ bạn cấp phát. Đảm bảo chuỗi bạn chép không vượt quá kích thước cho phép.\n\n3. **Dùng thư viện chuẩn**: Cách an toàn nhất là nếu chương trình không yêu cầu sử dụng mảng tự cấp phát tĩnh, hãy sử dụng các thư viện chuẩn quản lý chuỗi như `string.h` hoặc sử dụng `std::string` nếu làm việc với C++.\n\nVí dụ minh họa:\n\n### Ví dụ sai (có thể gây ra buffer overflow)\n\n```c\n#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char buffer[10];  // Cấp phát bộ nhớ chỉ đủ cho 10 ký tự\n    strcpy(buffer, \"BufferOverflow\");  // \"BufferOverflow\" có 15 ký tự\n    printf(\"%s\\n\", buffer);\n    return 0;\n}\n```\n\nTrong ví dụ trên, chuỗi \"BufferOverflow\" dài hơn kích thước của `buffer`, dẫn đến ghi đè ra vùng nhớ ngoài.\n\n### Ví dụ đúng\n\n```c\n#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char buffer[11];  // Cấp phát bộ nhớ đủ cho 10 ký tự và 1 ký tự null\n    strncpy(buffer, \"BufferOver\", sizeof(buffer) - 1);  // sao chép an toàn\n    buffer[sizeof(buffer) - 1] = '\\0';  // Đảm bảo kết thúc bằng ký tự null\n    printf(\"%s\\n\", buffer);\n    return 0;\n}\n```\n\nTrong ví dụ đúng, `strncpy` kết hợp với kiểm tra kích thước đảm bảo không có buffer overflow xảy ra, và chuỗi luôn được kết thúc bởi ký tự null (`'\\0'`). Luôn nhớ rằng `strncpy` không tự động thêm ký tự null nếu chuỗi nguồn dài hơn kích thước cho phép, nên bạn cần tự đảm bảo điều này.",
+      "latency_ms": 7344,
+      "tokens": {
+        "prompt_tokens": 123,
+        "completion_tokens": 547,
+        "total_tokens": 670
+      },
+      "provider": "openai",
+      "type": "CHATBOT_BASELINE",
+      "scenario_id": 3,
+      "difficulty": "Medium"
+    }
+  ]
+}

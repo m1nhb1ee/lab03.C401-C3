@@ -1,0 +1,447 @@
+{
+  "test_type": "COMPREHENSIVE_ALL_VERSIONS",
+  "timestamp": "2026-04-06T16:20:56.641756",
+  "scenarios": 5,
+  "results": {
+    "chatbot": [
+      {
+        "success": true,
+        "query": "Tôi không hiểu con trỏ hoạt động như thế nào. Cho tôi ví dụ thực tế và giải thích chi tiết.",
+        "response": "Con trỏ là một khái niệm quan trọng trong ngôn ngữ lập trình C. Một con trỏ là một biến có khả năng lưu trữ địa chỉ bộ nhớ của một biến khác. Điều này cho phép bạn thao tác trực tiếp với bộ nhớ và thực hiện các thao tác như truyền tham số theo tham chiếu, quản lý bộ nhớ động, và nhiều hơn nữa.\n\n### Ví dụ thực tế\n\nGiả sử bạn có một biến số nguyên và bạn muốn sử dụng con trỏ để thay đổi giá trị của biến đó. Dưới đây là ví dụ minh họa cho điều này:\n\n```c\n#include <stdio.h>\n\nint main() {\n    int num = 10;       // Khai báo một biến số nguyên\n    int *ptr = &num;    // Khai báo một con trỏ và lưu địa chỉ của 'num'\n\n    printf(\"Giá trị ban đầu của num: %d\\n\", num);\n    printf(\"Địa chỉ của num: %p\\n\", (void*)&num);\n    printf(\"Con trỏ ptr trỏ tới địa chỉ: %p\\n\", (void*)ptr);\n\n    // Sử dụng con trỏ để thay đổi giá trị của 'num'\n    *ptr = 20;\n\n    printf(\"Giá trị mới của num: %d\\n\", num);\n\n    return 0;\n}\n```\n\n### Giải thích chi tiết\n\n1. **Khai báo biến và con trỏ:**\n   - `int num = 10;` khai báo một biến số nguyên `num` và gán giá trị ban đầu là 10.\n   - `int *ptr = &num;` khai báo một con trỏ `ptr` có kiểu `int*`. Dấu `&` được sử dụng để lấy địa chỉ của biến `num`, và con trỏ `ptr` lưu trữ địa chỉ này.\n\n2. **In ra giá trị và địa chỉ:**\n   - `printf` được dùng để in giá trị hiện tại của `num`, địa chỉ của `num`, và giá trị của con trỏ `ptr` (là địa chỉ của `num`). `\\%p` được dùng để in địa chỉ bộ nhớ.\n\n3. **Thay đổi giá trị của biến qua con trỏ:**\n   - Dòng `*ptr = 20;` sử dụng toán tử dereference `*`, có nghĩa là thay đổi giá trị tại địa chỉ mà `ptr` trỏ tới. Trong trường hợp này, `ptr` đang trỏ tới `num`, do đó giá trị của `num` được thay đổi thành 20.\n\n4. **Kết quả in ra:**\n   - Ban đầu, `num` có giá trị là 10. Sau khi sử dụng con trỏ để sửa đổi, giá trị của `num` trở thành 20. Điều này minh họa rằng chúng ta có thể thay đổi trực tiếp giá trị của biến thông qua con trỏ.\n\n### Kết luận\n\nCon trỏ cung cấp một cách linh hoạt để truy cập và thao tác với địa chỉ bộ nhớ trực tiếp. Khi hiểu rõ cách hoạt động của con trỏ, bạn có thể sử dụng chúng để thực hiện các thao tác như quản lý bộ nhớ động (với `malloc` và `free`), và truyền dữ liệu hiệu quả hơn thông qua tham chiếu thay vì tham trị.",
+        "latency_ms": 6910,
+        "tokens": {
+          "prompt_tokens": 128,
+          "completion_tokens": 701,
+          "total_tokens": 829
+        },
+        "provider": "openai",
+        "type": "CHATBOT_BASELINE",
+        "scenario_id": 1
+      },
+      {
+        "success": true,
+        "query": "Tôi nộp bài muộn 2 ngày. Bài của tôi sẽ bị trừ bao nhiêu điểm?",
+        "response": "Quy định về việc trừ điểm khi nộp bài muộn thường phụ thuộc vào chính sách của từng giáo viên hoặc cơ sở giáo dục. Vì vậy, tôi không thể đưa ra con số cụ thể cho bạn. Bạn nên xem lại syllabus khóa học, các thông báo của giáo viên hoặc hỏi trực tiếp giáo viên phụ trách để biết chính xác mức độ bị trừ điểm trong trường hợp này.",
+        "latency_ms": 1922,
+        "tokens": {
+          "prompt_tokens": 128,
+          "completion_tokens": 83,
+          "total_tokens": 211
+        },
+        "provider": "openai",
+        "type": "CHATBOT_BASELINE",
+        "scenario_id": 2
+      },
+      {
+        "success": true,
+        "query": "Làm thế nào để tôi tránh buffer overflow khi dùng strings?",
+        "response": "Buffer overflow là một lỗi phổ biến trong lập trình với ngôn ngữ C khi dữ liệu vượt quá kích thước bộ nhớ mà một vùng nhớ được cấp phát, và dữ liệu đó có thể ghi đè lên bộ nhớ liền kề, gây nên những hành vi không mong muốn, lỗi chương trình hoặc lỗ hổng bảo mật.\n\nĐể tránh buffer overflow khi làm việc với chuỗi ký tự trong C, bạn có thể áp dụng những cách sau:\n\n1. **Sử dụng `strncpy` và `strncat`:**\n   - Thay vì dùng `strcpy` và `strcat`, sử dụng `strncpy` và `strncat` cho phép bạn chỉ định số lượng ký tự tối đa sẽ được sao chép và nối.\n\n   ```c\n   char destination[10];\n   char source[] = \"Hello\";\n\n   // Sao chép tối đa 9 ký tự, vì cần chừa chỗ cho ký tự null '\\0'\n   strncpy(destination, source, sizeof(destination) - 1);\n   destination[sizeof(destination) - 1] = '\\0'; // Đảm bảo chuỗi được null-terminated\n   ```\n\n2. **Sử dụng hàm `snprintf`:**\n   - `snprintf` là một lựa chọn tốt thay cho `sprintf`, vì nó đảm bảo chỉ ghi tối đa một số ký tự xác định đến buffer.\n\n   ```c\n   char buffer[50];\n   int number = 1234;\n\n   snprintf(buffer, sizeof(buffer), \"Number: %d\", number);\n   ```\n\n3. **Kiểm tra kích thước chuỗi:**\n   - Luôn kiểm tra và so sánh kích thước của dữ liệu với kích thước của buffer trước khi thực hiện sao chép hoặc nối chuỗi.\n\n4. **Sử dụng thư viện an toàn hơn:**\n   - Một số hệ thống cung cấp các thư viện mở rộng như `strlcpy` và `strlcat`, tương tự như `strncpy` và `strncat` nhưng an toàn hơn, chúng thường dễ sử dụng hơn vì luôn gắn thêm ký tự null cuối chuỗi.\n\n5. **Sử dụng dynamic memory allocation nếu cần:**\n   - Khi kích thước của chuỗi không cố định, có thể sử dụng `malloc`, `calloc`, hoặc `realloc` để cấp phát bộ nhớ động, nhưng cần phải quản lý việc giải phóng bộ nhớ sử dụng `free` sau khi không còn cần thiết.\n\n6. **Cảnh giác với đầu vào từ người dùng:**\n   - Kiểm tra và hợp lệ hóa tất cả đầu vào từ bên ngoài (người dùng, file, network, v.v.) để tránh xử lý dữ liệu vượt quá kích thước của buffer dự kiến.\n\n7. **Sử dụng các công cụ phân tích mã:**\n   - Sử dụng các công cụ phân tích tĩnh hoặc động có thể giúp phát hiện các điểm tiềm ẩn có thể gây ra buffer overflow.\n\nỨng dụng các nguyên tắc này sẽ giúp bạn tránh được lỗi buffer overflow trong chương trình của mình. Chú ý luôn kiểm tra và kiểm soát các biên của buffer trong mọi thao tác với chuỗi dữ liệu.",
+        "latency_ms": 6477,
+        "tokens": {
+          "prompt_tokens": 116,
+          "completion_tokens": 668,
+          "total_tokens": 784
+        },
+        "provider": "openai",
+        "type": "CHATBOT_BASELINE",
+        "scenario_id": 3
+      },
+      {
+        "success": true,
+        "query": "Tôi muốn học thêm về đệ quy. Cho tôi roadmap từ cơ bản đến nâng cao.",
+        "response": "Học đệ quy là một phần quan trọng trong lập trình, đặc biệt đối với ngôn ngữ C. Dưới đây là lộ trình học từ cơ bản đến nâng cao về đệ quy:\n\n### 1. Hiểu Khái Niệm Đệ Quy\n\n- **Định nghĩa Đệ quy**: Đệ quy là kỹ thuật mà trong đó một hàm tự gọi chính nó để giải quyết một vấn đề. Một bài toán đệ quy thường được chia nhỏ thành các bài toán con, có tính chất tương tự bài toán ban đầu.\n  \n- **Điều kiện cơ sở (Base case)**: Đây là điều kiện ngăn chặn việc gọi đệ quy vô hạn. Mỗi hàm đệ quy cần có ít nhất một điều kiện cơ sở để kết thúc đệ quy.\n\n### 2. Bắt đầu với Các Bài Toán Cơ Bản\n\n- **Tính giai thừa (Factorial)**:\n  ```c\n  int factorial(int n) {\n      if (n == 0) // Điều kiện cơ sở\n          return 1;\n      else\n          return n * factorial(n - 1); // Gọi đệ quy\n  }\n  ```\n\n- **Tính dãy Fibonacci**:\n  ```c\n  int fibonacci(int n) {\n      if (n <= 1) // Điều kiện cơ sở\n          return n;\n      else\n          return fibonacci(n - 1) + fibonacci(n - 2); // Gọi đệ quy\n  }\n  ```\n\n### 3. Tiến tới Các Bài Toán Phức Tạp Hơn\n\n- **Tìm kiếm nhị phân (Binary Search)**:\n  - Hiểu cách chia một mảng đã được sắp xếp thành hai nửa và tìm kiếm mục tiêu trong một nửa đó.\n  \n- **Tháp Hà Nội (Tower of Hanoi)**: \n  ```c\n  void moveDisk(int n, char source, char target, char auxiliary) {\n      if (n == 1) {\n          printf(\"Di chuyển đĩa 1 từ %c sang %c\\n\", source, target);\n          return;\n      }\n      moveDisk(n - 1, source, auxiliary, target);\n      printf(\"Di chuyển đĩa %d từ %c sang %c\\n\", n, source, target);\n      moveDisk(n - 1, auxiliary, target, source);\n  }\n  ```\n\n### 4. Hiểu Về Tính Hiệu Quả và Hạn Chế Của Đệ Quy\n\n- **Tính hiệu quả**: Một số bài toán đệ quy như dãy Fibonacci có thể không hiệu quả do nhiều lần tính toán lại các giá trị giống nhau. Các phương pháp như dùng bộ nhớ đệm (memoization) hoặc chuyển đệ quy sang lặp có thể cải thiện hiệu quả.\n\n- **Hạn chế**: Đệ quy có thể gây ra \"stack overflow\" do lượng lớn các hàm được xếp chồng lên nhau trong khi thực thi. Cần chú ý sử dụng đệ quy đối với các bài toán có quy mô đủ nhỏ hoặc kiểm soát kỹ điều kiện dừng.\n\n### 5. Làm Quen với Đệ Quy Đuôi (Tail Recursion)\n\n- **Đệ quy đuôi** là một dạng đặc biệt của đệ quy mà độ sâu của đệ quy không tăng lên khi gọi hàm và có thể được tối ưu hóa tốt hơn trong một số ngôn ngữ lập trình.\n\n  Ví dụ: Tính giai thừa dùng đệ quy đuôi.\n  ```c\n  int tail_factorial(int n, int a) {\n      if (n == 0)\n          return a;\n      else\n          return tail_factorial(n - 1, n * a);\n  }\n  \n  // Gọi hàm với a khởi tạo là 1\n  tail_factorial(n, 1);\n  ```\n\n### 6. Khám Phá Đệ Quy Khuyếch Tán (Mutual Recursion)\n\n- Khám phá các hàm đệ quy khuyếch tán, trong đó một hàm đệ quy gọi đến một hàm khác để đạt được sự đệ quy khuyếch tán.\n\n### 7. Ứng Dụng Đệ Quy Trong Thực Tiễn\n\n- **Giải quyết bài toán tổ hợp**: Ví dụ, tạo tất cả các hoán vị hoặc tổ hợp của một tập hợp.\n- **Phân tích cú pháp đệ quy**: Sử dụng trong các máy quét và máy phân tích cú pháp (parsers) khi làm việc với cú pháp biểu thức.\n\n### 8. Thực Hành và Tìm Tài Nguyên Học Tập\n\n- **Bài tập thực hành**: Tìm các tài nguyên chứa bài tập về đệ quy trên mạng, như trên HackerRank, LeetCode hay Codeforces.\n- **Sách và bài giảng**: Tham khảo các tài liệu lập trình C chuyên sâu để nghiên cứu thêm về làm thế nào đệ quy được sử dụng trong các bài toán khác nhau.\n\nBắt đầu từ các ví dụ cơ bản, sau đó dần dần khám phá các chủ đề sâu hơn sẽ giúp bạn nắm vững đệ quy trong lập trình C.",
+        "latency_ms": 12836,
+        "tokens": {
+          "prompt_tokens": 123,
+          "completion_tokens": 1123,
+          "total_tokens": 1246
+        },
+        "provider": "openai",
+        "type": "CHATBOT_BASELINE",
+        "scenario_id": 4
+      },
+      {
+        "success": true,
+        "query": "Tôi có 3 bài tập chưa nộp. Deadline là bao giờ? Tôi còn bao nhiêu thời gian?",
+        "response": "Rất tiếc, tôi không thể biết được deadline của các bài tập của bạn vì không có thông tin về khoá học hay giáo viên của bạn. Để biết chính xác, bạn nên kiểm tra lại trong hệ thống quản lý học tập của trường, thông tin từ giảng viên, hoặc các tài liệu hướng dẫn khóa học mà bạn được cung cấp. Nếu bạn cần thêm thời gian, bạn cũng có thể liên hệ với giảng viên để xin gia hạn nếu cần thiết.",
+        "latency_ms": 1732,
+        "tokens": {
+          "prompt_tokens": 128,
+          "completion_tokens": 99,
+          "total_tokens": 227
+        },
+        "provider": "openai",
+        "type": "CHATBOT_BASELINE",
+        "scenario_id": 5
+      }
+    ],
+    "agent_v1": [
+      {
+        "success": true,
+        "query": "Tôi không hiểu con trỏ hoạt động như thế nào. Cho tôi ví dụ thực tế và giải thích chi tiết.",
+        "answer": "Con trỏ (Pointer) là một biến lưu trữ địa chỉ bộ nhớ của một biến khác. Điều này cho phép bạn thao tác trực tiếp với bộ nhớ, truy xuất hoặc thay đổi giá trị của biến khác thông qua địa chỉ của nó.\n\nVí dụ 1:\n```c\nint x = 10;\nint *p = &x;  // & là operator lấy địa chỉ của biến x\nprintf(\"%d\", *p);  // * là operator dereference, truy xuất giá trị tại địa chỉ p\n```\nGiải thích: Con trỏ `p` được khởi tạo để lưu địa chỉ của biến `x`. Khi bạn sử dụng `*p`, bạn đang truy xuất giá trị của `x` thông qua địa chỉ được lưu trong `p`.\n\nVí dụ 2:\n```c\nint *p = malloc(sizeof(int));  // Cấp phát bộ nhớ động cho một số nguyên\n*p = 20;  // Gán giá trị 20 vào địa chỉ bộ nhớ vừa được cấp phát\nfree(p);  // Giải phóng bộ nhớ đã cấp phát\n```\nGiải thích: `malloc` được dùng để cấp phát bộ nhớ động, với con trỏ `p` lưu trữ địa chỉ bộ nhớ này. Sau khi sử dụng, cần dùng `free(p)` để giải phóng bộ nhớ nhằm tránh việc rò rỉ bộ nhớ.\n\nCác lỗi thường gặp:\n- Dereference con trỏ NULL sẽ dẫn đến chương trình bị crash.\n- Quên gọi `free` sau khi `malloc` sẽ gây ra rò rỉ bộ nhớ.\n- Dereference con trỏ đã bị giải phóng tạo ra lỗi \"dangling pointer\", có thể làm chương trình hoạt động không đúng.\n\nĐể hiểu rõ hơn, bạn có thể tham khảo tài liệu như sách \"K&R C Programming\", Chương 5: Con trỏ và Mảng.",
+        "steps": 2,
+        "total_latency_ms": 5631,
+        "total_tokens": 1508,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "search_learning_material",
+            "input": {
+              "keyword": "pointer"
+            },
+            "observation": "{\"success\": true, \"topic\": \"Con Trỏ (Pointer)\", \"definition\": \"Con trỏ là một biến lưu trữ địa chỉ b...",
+            "latency_ms": 1193
+          },
+          {
+            "step": 2,
+            "type": "FINAL_ANSWER",
+            "content": "Con trỏ (Pointer) là một biến lưu trữ địa chỉ bộ nhớ của một biến khác. Điều này cho phép bạn thao tác trực tiếp với bộ nhớ, truy xuất hoặc thay đổi giá trị của biến khác thông qua địa chỉ của nó.\n\nVí dụ 1:\n```c\nint x = 10;\nint *p = &x;  // & là operator lấy địa chỉ của biến x\nprintf(\"%d\", *p);  // * là operator dereference, truy xuất giá trị tại địa chỉ p\n```\nGiải thích: Con trỏ `p` được khởi tạo để lưu địa chỉ của biến `x`. Khi bạn sử dụng `*p`, bạn đang truy xuất giá trị của `x` thông qua địa chỉ được lưu trong `p`.\n\nVí dụ 2:\n```c\nint *p = malloc(sizeof(int));  // Cấp phát bộ nhớ động cho một số nguyên\n*p = 20;  // Gán giá trị 20 vào địa chỉ bộ nhớ vừa được cấp phát\nfree(p);  // Giải phóng bộ nhớ đã cấp phát\n```\nGiải thích: `malloc` được dùng để cấp phát bộ nhớ động, với con trỏ `p` lưu trữ địa chỉ bộ nhớ này. Sau khi sử dụng, cần dùng `free(p)` để giải phóng bộ nhớ nhằm tránh việc rò rỉ bộ nhớ.\n\nCác lỗi thường gặp:\n- Dereference con trỏ NULL sẽ dẫn đến chương trình bị crash.\n- Quên gọi `free` sau khi `malloc` sẽ gây ra rò rỉ bộ nhớ.\n- Dereference con trỏ đã bị giải phóng tạo ra lỗi \"dangling pointer\", có thể làm chương trình hoạt động không đúng.\n\nĐể hiểu rõ hơn, bạn có thể tham khảo tài liệu như sách \"K&R C Programming\", Chương 5: Con trỏ và Mảng.",
+            "latency_ms": 4435
+          }
+        ],
+        "type": "AGENT_v1",
+        "scenario_id": 1
+      },
+      {
+        "success": true,
+        "query": "Tôi nộp bài muộn 2 ngày. Bài của tôi sẽ bị trừ bao nhiêu điểm?",
+        "answer": "Bài của bạn sẽ bị trừ 20% số điểm do nộp muộn 2 ngày, theo chính sách của môn học.",
+        "steps": 3,
+        "total_latency_ms": 3872,
+        "total_tokens": 1913,
+        "trace": [
+          {
+            "step": 1,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 1838
+          },
+          {
+            "step": 2,
+            "type": "TOOL_CALL",
+            "tool": "get_course_policy",
+            "input": {
+              "policy_type": "late_submission"
+            },
+            "observation": "{\"success\": true, \"policy_type\": \"late_submission\", \"description\": \"Nộp trễ 1 ngày: -10%. Trễ 2-3 ng...",
+            "latency_ms": 715
+          },
+          {
+            "step": 3,
+            "type": "FINAL_ANSWER",
+            "content": "Bài của bạn sẽ bị trừ 20% số điểm do nộp muộn 2 ngày, theo chính sách của môn học.",
+            "latency_ms": 1317
+          }
+        ],
+        "type": "AGENT_v1",
+        "scenario_id": 2
+      },
+      {
+        "success": false,
+        "query": "Làm thế nào để tôi tránh buffer overflow khi dùng strings?",
+        "error": "Agent reached max steps (10) without providing final answer",
+        "steps": 10,
+        "total_latency_ms": 35672,
+        "total_tokens": 26161,
+        "trace": [
+          {
+            "step": 1,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3310
+          },
+          {
+            "step": 2,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3078
+          },
+          {
+            "step": 3,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3642
+          },
+          {
+            "step": 4,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3001
+          },
+          {
+            "step": 5,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3595
+          },
+          {
+            "step": 6,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 4883
+          },
+          {
+            "step": 7,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3359
+          },
+          {
+            "step": 8,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 3693
+          },
+          {
+            "step": 9,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 2721
+          },
+          {
+            "step": 10,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 4385
+          }
+        ],
+        "type": "AGENT_v1",
+        "scenario_id": 3
+      },
+      {
+        "success": true,
+        "query": "Tôi muốn học thêm về đệ quy. Cho tôi roadmap từ cơ bản đến nâng cao.",
+        "answer": "### Roadmap học Đệ Quy từ Cơ bản đến Nâng cao\n\n1. **Khái niệm Cơ bản của Đệ Quy**\n   - **Định nghĩa**: Đệ quy là khi một hàm gọi chính nó để giải quyết bài toán nhỏ hơn.\n   - **Ví dụ đơn giản**: Hàm tính giai thừa\n     ```c\n     int factorial(int n) {\n         if (n <= 1) return 1; // Base case: điều kiện dừng lại\n         return n * factorial(n-1); // Recursive case: gọi lại với n nhỏ hơn\n     }\n     ```\n   - **Lỗi thường gặp**: Quên base case có thể dẫn đến đệ quy vô hạn, gây ra lỗi stack overflow.\n\n2. **Bài toán Kinh điển với Đệ Quy**\n   - **Đệ Quy và Dãy Fibonacci**: \n     ```c\n     int fibonacci(int n) {\n         if (n <= 1) return n; // Base case\n         return fibonacci(n-1) + fibonacci(n-2); // Recursive case\n     }\n     ```\n\n3. **Hiểu sâu và Tối ưu hóa**\n   - Tránh đệ quy vô hạn và cải thiện hiệu suất bằng cách sử dụng \"Memoization\".\n   - Sử dụng đệ quy đuôi (tail recursion) để tối ưu hóa chuyển đổi đệ quy thành vòng lặp.\n   \n4. **Các bài toán Phức tạp hơn**\n   - **Quick Sort hay Merge Sort**: Dùng đệ quy để phân chia bài toán thành các phần nhỏ hơn.\n   - **Backtracking**: Sử dụng đệ quy để tìm kiếm và thử nghiệm giải pháp (VD: bài toán 8 quân hậu).\n\n5. **Thực hành và Nguồn Học Thêm**\n   - Đọc chương 4 của sách \"The C Programming Language\" (Kernighan & Ritchie)\n   - Thực hành bằng cách viết và tối ưu các hàm đệ quy cho các bài toán khác nhau.\n\nVới roadmap này, bạn sẽ có nền tảng vững chắc về đệ quy và sẵn sàng để giải quyết các bài toán phức tạp hơn.",
+        "steps": 3,
+        "total_latency_ms": 7498,
+        "total_tokens": 2379,
+        "trace": [
+          {
+            "step": 1,
+            "type": "PARSE_ERROR",
+            "content": "No valid action found in LLM response",
+            "latency_ms": 1637
+          },
+          {
+            "step": 2,
+            "type": "TOOL_CALL",
+            "tool": "search_learning_material",
+            "input": {
+              "keyword": "recursion"
+            },
+            "observation": "{\"success\": true, \"topic\": \"Đệ Quy (Recursion)\", \"definition\": \"Đệ quy là khi một hàm gọi chính nó đ...",
+            "latency_ms": 720
+          },
+          {
+            "step": 3,
+            "type": "FINAL_ANSWER",
+            "content": "### Roadmap học Đệ Quy từ Cơ bản đến Nâng cao\n\n1. **Khái niệm Cơ bản của Đệ Quy**\n   - **Định nghĩa**: Đệ quy là khi một hàm gọi chính nó để giải quyết bài toán nhỏ hơn.\n   - **Ví dụ đơn giản**: Hàm tính giai thừa\n     ```c\n     int factorial(int n) {\n         if (n <= 1) return 1; // Base case: điều kiện dừng lại\n         return n * factorial(n-1); // Recursive case: gọi lại với n nhỏ hơn\n     }\n     ```\n   - **Lỗi thường gặp**: Quên base case có thể dẫn đến đệ quy vô hạn, gây ra lỗi stack overflow.\n\n2. **Bài toán Kinh điển với Đệ Quy**\n   - **Đệ Quy và Dãy Fibonacci**: \n     ```c\n     int fibonacci(int n) {\n         if (n <= 1) return n; // Base case\n         return fibonacci(n-1) + fibonacci(n-2); // Recursive case\n     }\n     ```\n\n3. **Hiểu sâu và Tối ưu hóa**\n   - Tránh đệ quy vô hạn và cải thiện hiệu suất bằng cách sử dụng \"Memoization\".\n   - Sử dụng đệ quy đuôi (tail recursion) để tối ưu hóa chuyển đổi đệ quy thành vòng lặp.\n   \n4. **Các bài toán Phức tạp hơn**\n   - **Quick Sort hay Merge Sort**: Dùng đệ quy để phân chia bài toán thành các phần nhỏ hơn.\n   - **Backtracking**: Sử dụng đệ quy để tìm kiếm và thử nghiệm giải pháp (VD: bài toán 8 quân hậu).\n\n5. **Thực hành và Nguồn Học Thêm**\n   - Đọc chương 4 của sách \"The C Programming Language\" (Kernighan & Ritchie)\n   - Thực hành bằng cách viết và tối ưu các hàm đệ quy cho các bài toán khác nhau.\n\nVới roadmap này, bạn sẽ có nền tảng vững chắc về đệ quy và sẵn sàng để giải quyết các bài toán phức tạp hơn.",
+            "latency_ms": 5139
+          }
+        ],
+        "type": "AGENT_v1",
+        "scenario_id": 4
+      },
+      {
+        "success": true,
+        "query": "Tôi có 3 bài tập chưa nộp. Deadline là bao giờ? Tôi còn bao nhiêu thời gian?",
+        "answer": "Deadline cho tất cả bài tập là trước 23:59 ngày cuối tuần. Bạn nên kiểm tra xem hôm nay là ngày nào trong tuần để biết còn bao nhiêu thời gian để nộp 3 bài tập còn lại.",
+        "steps": 2,
+        "total_latency_ms": 1830,
+        "total_tokens": 1036,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "get_course_policy",
+            "input": {
+              "policy_type": "deadline"
+            },
+            "observation": "{\"success\": true, \"policy_type\": \"deadline\", \"description\": \"Tất cả bài tập phải nộp trước 23:59 ngà...",
+            "latency_ms": 866
+          },
+          {
+            "step": 2,
+            "type": "FINAL_ANSWER",
+            "content": "Deadline cho tất cả bài tập là trước 23:59 ngày cuối tuần. Bạn nên kiểm tra xem hôm nay là ngày nào trong tuần để biết còn bao nhiêu thời gian để nộp 3 bài tập còn lại.",
+            "latency_ms": 962
+          }
+        ],
+        "type": "AGENT_v1",
+        "scenario_id": 5
+      }
+    ],
+    "agent_v2": [
+      {
+        "success": true,
+        "query": "Tôi không hiểu con trỏ hoạt động như thế nào. Cho tôi ví dụ thực tế và giải thích chi tiết.",
+        "answer": "Con trỏ là một biến lưu trữ địa chỉ bộ nhớ của một biến khác trong lập trình C. Chúng thường được sử dụng để quản lý bộ nhớ động, thao tác với mảng, và truyền tham số bởi địa chỉ trong hàm. \n\nVí dụ thực tế:\n1. Khai báo con trỏ và truy cập giá trị:\n   ```c\n   int x = 10;\n   int *p = &x; // p lưu trữ địa chỉ của x\n   printf(\"%d\", *p); // Dereference con trỏ để lấy giá trị của x, in ra 10\n   ```\n   - `&x` lấy địa chỉ của biến `x`, `*p` dereferences con trỏ để lấy giá trị của biến mà nó trỏ tới.\n\n2. Sử dụng con trỏ với cấp phát động:\n   ```c\n   int *p = malloc(sizeof(int)); // Cấp phát bộ nhớ cho một số nguyên\n   *p = 20; // Đặt giá trị cho vùng nhớ này\n   free(p); // Giải phóng bộ nhớ khi không còn sử dụng\n   ```\n   - `malloc` được sử dụng để cấp phát bộ nhớ động, và sau đó giá trị được gán thông qua con trỏ `p`. Cuối cùng `free(p)` giải phóng bộ nhớ để tránh rò rỉ bộ nhớ.\n\nLưu ý các lỗi thường gặp:\n- Dereference một con trỏ NULL sẽ làm chương trình bị crash.\n- Quên giải phóng bộ nhớ sau khi sử dụng với `free()` có thể gây ra rò rỉ bộ nhớ.\n- Truy cập vào vùng nhớ thông qua con trỏ đã bị giải phóng sẽ dẫn đến lỗi dangling pointer.\n\nTài liệu tham khảo thêm: \"K&R C Programming, Ch.5: Pointers and Arrays\" để nắm rõ hơn về con trỏ và mảng.",
+        "steps": 3,
+        "total_latency_ms": 5560,
+        "total_tokens": 2677,
+        "parse_errors": 0,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "create_code_example",
+            "input": {
+              "topic": "pointer_arithmetic",
+              "complexity": "beginner"
+            },
+            "observation": "{\"success\": false, \"error\": \"Không tìm thấy chủ đề 'pointer_arithmetic' trong database\"}",
+            "latency_ms": 923
+          },
+          {
+            "step": 2,
+            "type": "TOOL_CALL",
+            "tool": "search_learning_material",
+            "input": {
+              "keyword": "pointer"
+            },
+            "observation": "{\"success\": true, \"topic\": \"Con Trỏ (Pointer)\", \"definition\": \"Con trỏ là một biến lưu trữ địa chỉ b...",
+            "latency_ms": 802
+          },
+          {
+            "step": 3,
+            "type": "FINAL_ANSWER",
+            "content": "Con trỏ là một biến lưu trữ địa chỉ bộ nhớ của một biến khác trong lập trình C. Chúng thường được sử dụng để quản lý bộ nhớ động, thao tác với mảng, và truyền tham số bởi địa chỉ trong hàm. \n\nVí dụ thực tế:\n1. Khai báo con trỏ và truy cập giá trị:\n   ```c\n   int x = 10;\n   int *p = &x; // p lưu trữ địa chỉ của x\n   printf(\"%d\", *p); // Dereference con trỏ để lấy giá trị của x, in ra 10\n   ```\n   - `&x` lấy địa chỉ của biến `x`, `*p` dereferences con trỏ để lấy giá trị của biến mà nó trỏ tới.\n\n2. Sử dụng con trỏ với cấp phát động:\n   ```c\n   int *p = malloc(sizeof(int)); // Cấp phát bộ nhớ cho một số nguyên\n   *p = 20; // Đặt giá trị cho vùng nhớ này\n   free(p); // Giải phóng bộ nhớ khi không còn sử dụng\n   ```\n   - `malloc` được sử dụng để cấp phát bộ nhớ động, và sau đó giá trị được gán thông qua con trỏ `p`. Cuối cùng `free(p)` giải phóng bộ nhớ để tránh rò rỉ bộ nhớ.\n\nLưu ý các lỗi thường gặp:\n- Dereference một con trỏ NULL sẽ làm chương trình bị crash.\n- Quên giải phóng bộ nhớ sau khi sử dụng với `free()` có thể gây ra rò rỉ bộ nhớ.\n- Truy cập vào vùng nhớ thông qua con trỏ đã bị giải phóng sẽ dẫn đến lỗi dangling pointer.\n\nTài liệu tham khảo thêm: \"K&R C Programming, Ch.5: Pointers and Arrays\" để nắm rõ hơn về con trỏ và mảng.",
+            "latency_ms": 3832
+          }
+        ],
+        "type": "AGENT_v2",
+        "scenario_id": 1
+      },
+      {
+        "success": true,
+        "query": "Tôi nộp bài muộn 2 ngày. Bài của tôi sẽ bị trừ bao nhiêu điểm?",
+        "answer": "Bạn bị trừ 20% cho việc nộp bài muộn 2 ngày, do đó điểm cuối cùng của bạn là 80/100.",
+        "steps": 3,
+        "total_latency_ms": 3245,
+        "total_tokens": 2288,
+        "parse_errors": 0,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "get_course_policy",
+            "input": {
+              "policy_type": "late_submission"
+            },
+            "observation": "{\"success\": true, \"policy_type\": \"late_submission\", \"description\": \"Nộp trễ 1 ngày: -10%. Trễ 2-3 ng...",
+            "latency_ms": 1159
+          },
+          {
+            "step": 2,
+            "type": "TOOL_CALL",
+            "tool": "calculate_grade_penalty",
+            "input": {
+              "original_score": 100,
+              "days_late": 2
+            },
+            "observation": "{\"success\": true, \"original_score\": 100, \"days_late\": 2, \"penalty_percentage\": 20, \"final_score\": 80...",
+            "latency_ms": 719
+          },
+          {
+            "step": 3,
+            "type": "FINAL_ANSWER",
+            "content": "Bạn bị trừ 20% cho việc nộp bài muộn 2 ngày, do đó điểm cuối cùng của bạn là 80/100.",
+            "latency_ms": 1365
+          }
+        ],
+        "type": "AGENT_v2",
+        "scenario_id": 2
+      },
+      {
+        "success": true,
+        "query": "Làm thế nào để tôi tránh buffer overflow khi dùng strings?",
+        "answer": "Để tránh buffer overflow khi làm việc với chuỗi trong C, bạn nên:\n\n1. Sử dụng hàm an toàn hơn như `strncpy` thay vì `strcpy`, hoặc `snprintf` thay vì `sprintf` để chỉ định kích thước tối đa của bộ đệm đích.\n2. Luôn xác định kích thước mảng đủ lớn để chứa chuỗi và ký tự null kết thúc.\n3. Kiểm tra chiều dài chuỗi trước khi sao chép để đảm bảo không vượt quá kích thước bộ đệm.\n4. Sử dụng thư viện chuẩn như `GNU C Library` có hỗ trợ các hàm kiểm tra kích thước và tránh các lỗi tràn.\n5. Thường xuyên kiểm tra và bật các cảnh báo của trình biên dịch để phát hiện sớm các vấn đề tiềm ẩn.",
+        "steps": 2,
+        "total_latency_ms": 3281,
+        "total_tokens": 1493,
+        "parse_errors": 0,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "search_learning_material",
+            "input": {
+              "keyword": "buffer overflow"
+            },
+            "observation": "{\"success\": false, \"error\": \"Không tìm thấy tài liệu về 'buffer overflow'\"}",
+            "latency_ms": 1359
+          },
+          {
+            "step": 2,
+            "type": "FINAL_ANSWER",
+            "content": "Để tránh buffer overflow khi làm việc với chuỗi trong C, bạn nên:\n\n1. Sử dụng hàm an toàn hơn như `strncpy` thay vì `strcpy`, hoặc `snprintf` thay vì `sprintf` để chỉ định kích thước tối đa của bộ đệm đích.\n2. Luôn xác định kích thước mảng đủ lớn để chứa chuỗi và ký tự null kết thúc.\n3. Kiểm tra chiều dài chuỗi trước khi sao chép để đảm bảo không vượt quá kích thước bộ đệm.\n4. Sử dụng thư viện chuẩn như `GNU C Library` có hỗ trợ các hàm kiểm tra kích thước và tránh các lỗi tràn.\n5. Thường xuyên kiểm tra và bật các cảnh báo của trình biên dịch để phát hiện sớm các vấn đề tiềm ẩn.",
+            "latency_ms": 1920
+          }
+        ],
+        "type": "AGENT_v2",
+        "scenario_id": 3
+      },
+      {
+        "success": true,
+        "query": "Tôi muốn học thêm về đệ quy. Cho tôi roadmap từ cơ bản đến nâng cao.",
+        "answer": "Bạn có thể học về đệ quy từ cơ bản đến nâng cao theo lộ trình sau:\n\n1. Beginner (4 giờ): \n   - Khái niệm: Đệ Quy (Recursion)\n   - Tài liệu: \"K&R C Programming, Ch.4\"\n   - Bài tập: Hiểu định nghĩa cơ bản, viết ví dụ đơn giản.\n\n2. Intermediate (8 giờ):\n   - Khái niệm: Đệ Quy nâng cao, áp dụng trong các thuật toán.\n   - Tài liệu: Ví dụ mã, bài tập trên LeetCode.\n   - Bài tập: Giải quyết bài toán phức tạp, debug mã có lỗi.\n\n3. Advanced (12 giờ):\n   - Khái niệm: Tối ưu hóa, quản lý bộ nhớ, tối ưu hiệu suất.\n   - Tài liệu: Sách lập trình C nâng cao, lập trình hệ thống.\n   - Bài tập: Thiết kế thuật toán tối ưu, tham gia các khóa học nâng cao.\n\nTổng thời gian ước tính: 24 giờ. Tài liệu khuyến nghị: \"K&R C Programming, Ch.4\".",
+        "steps": 2,
+        "total_latency_ms": 3457,
+        "total_tokens": 1816,
+        "parse_errors": 0,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "create_learning_roadmap",
+            "input": {
+              "topic": "recursion",
+              "target_level": "advanced"
+            },
+            "observation": "{\"success\": true, \"topic\": \"recursion\", \"target_level\": \"advanced\", \"roadmap\": [{\"level\": \"Beginner\"...",
+            "latency_ms": 947
+          },
+          {
+            "step": 2,
+            "type": "FINAL_ANSWER",
+            "content": "Bạn có thể học về đệ quy từ cơ bản đến nâng cao theo lộ trình sau:\n\n1. Beginner (4 giờ): \n   - Khái niệm: Đệ Quy (Recursion)\n   - Tài liệu: \"K&R C Programming, Ch.4\"\n   - Bài tập: Hiểu định nghĩa cơ bản, viết ví dụ đơn giản.\n\n2. Intermediate (8 giờ):\n   - Khái niệm: Đệ Quy nâng cao, áp dụng trong các thuật toán.\n   - Tài liệu: Ví dụ mã, bài tập trên LeetCode.\n   - Bài tập: Giải quyết bài toán phức tạp, debug mã có lỗi.\n\n3. Advanced (12 giờ):\n   - Khái niệm: Tối ưu hóa, quản lý bộ nhớ, tối ưu hiệu suất.\n   - Tài liệu: Sách lập trình C nâng cao, lập trình hệ thống.\n   - Bài tập: Thiết kế thuật toán tối ưu, tham gia các khóa học nâng cao.\n\nTổng thời gian ước tính: 24 giờ. Tài liệu khuyến nghị: \"K&R C Programming, Ch.4\".",
+            "latency_ms": 2508
+          }
+        ],
+        "type": "AGENT_v2",
+        "scenario_id": 4
+      },
+      {
+        "success": true,
+        "query": "Tôi có 3 bài tập chưa nộp. Deadline là bao giờ? Tôi còn bao nhiêu thời gian?",
+        "answer": "Tất cả bài tập phải nộp trước 23:59 ngày cuối tuần. Bạn cần kiểm tra lịch của tuần này để biết chính xác bạn còn bao nhiêu thời gian.",
+        "steps": 2,
+        "total_latency_ms": 1771,
+        "total_tokens": 1411,
+        "parse_errors": 0,
+        "trace": [
+          {
+            "step": 1,
+            "type": "TOOL_CALL",
+            "tool": "get_course_policy",
+            "input": {
+              "policy_type": "deadline"
+            },
+            "observation": "{\"success\": true, \"policy_type\": \"deadline\", \"description\": \"Tất cả bài tập phải nộp trước 23:59 ngà...",
+            "latency_ms": 677
+          },
+          {
+            "step": 2,
+            "type": "FINAL_ANSWER",
+            "content": "Tất cả bài tập phải nộp trước 23:59 ngày cuối tuần. Bạn cần kiểm tra lịch của tuần này để biết chính xác bạn còn bao nhiêu thời gian.",
+            "latency_ms": 1092
+          }
+        ],
+        "type": "AGENT_v2",
+        "scenario_id": 5
+      }
+    ]
+  }
+}
