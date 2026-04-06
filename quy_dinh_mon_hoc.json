@@ -1,0 +1,22 @@
+{
+  "deadline": {
+    "description": "Thời hạn nộp bài tập",
+    "details": "Tất cả bài tập phải được nộp trước 23:59 ngày deadline. Không chấp nhận nộp trễ trừ khi có lý do chính đáng."
+  },
+  "scoring": {
+    "description": "Cách tính điểm",
+    "details": "Điểm cuối cùng = 40% bài tập + 30% thi giữa kỳ + 30% thi cuối kỳ. Điểm tối thiểu để qua môn là 5.0/10."
+  },
+  "late_submission": {
+    "description": "Quy định nộp trễ",
+    "details": "Nộp trễ 1 ngày: -10%. Trễ 2-3 ngày: -20%. Trễ >3 ngày: 0 điểm. Phải có lý do chính đáng để được xem xét."
+  },
+  "grading": {
+    "description": "Thang điểm",
+    "details": "A: 8.5-10, B: 7.0-8.4, C: 5.5-6.9, D: 4.0-5.4, F: <4.0"
+  },
+  "attendance": {
+    "description": "Điểm danh",
+    "details": "Điểm danh chiếm 10% tổng điểm. Vắng không phép >20% sẽ không được thi cuối kỳ."
+  }
+}
