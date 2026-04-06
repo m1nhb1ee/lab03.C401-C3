@@ -234,7 +234,7 @@ Question #5 (Deadline + thời gian còn):
   3. get_course_policy(policy_type="late_submission") → Cảnh báo
 
 ╔════════════════════════════════════════════════════════════════════════════╗
-║  📊 TỔNG KẾT: 6 TOOLS CHÍNH                                              ║
+║  📊 TỔNG KẾT: 5 TOOLS CHÍNH                                              ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 
 1. search_learning_material()   ← Tra cứu tài liệu (K&R, resources)
@@ -242,7 +242,6 @@ Question #5 (Deadline + thời gian còn):
 3. calculate_grade_penalty()    ← Tính toán điểm bị trừ
 4. create_code_example()         ← Tạo ví dụ minh họa
 5. create_learning_roadmap()    ← Tạo lộ trình học
-6. calculate_deadline()          ← Tính deadline + thời gian còn
 
 Mỗi tool sẽ:
   ✅ Tra cứu data từ JSON files

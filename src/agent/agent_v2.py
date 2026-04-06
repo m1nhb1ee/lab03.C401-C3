@@ -1,6 +1,10 @@
 """
-Agent v1 - ReAct Loop Implementation
-Implements Thought -> Action -> Observation cycle
+Agent v2 - Improved ReAct Implementation
+Cải tiến so với v1:
+1. Support 5 tools (thay vì 3)
+2. Better JSON parsing (xử lý markdown JSON blocks)
+3. Improved prompt engineering
+4. Retry logic when parsing fails
 """
 
 import os
@@ -9,7 +13,7 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List
 from datetime import datetime
 
 # Add src to path
@@ -19,7 +23,9 @@ from src.core.openai_provider import OpenAIProvider
 from src.tools.teaching_assistant_tools import (
     SearchLearningMaterial,
     GetCoursePolicy,
-    CalculateGradePenalty
+    CalculateGradePenalty,
+    CreateCodeExample,
+    CreateLearningRoadmap
 )
 
 # Simple Logger
@@ -36,23 +42,23 @@ class Logger:
             f.write(json.dumps(event_data, ensure_ascii=False) + "\n")
 
 
-class ReActAgent:
+class ReActAgentV2:
     """
-    ReAct Agent - Reasoning + Acting
+    ReAct Agent v2 - Enhanced Version
     
-    Workflow:
-    1. Receive user query
-    2. Thought: LLM thinks about what to do
-    3. Action: LLM decides which tool to call
-    4. Observation: Tool executes and returns result
-    5. Loop back to 2 until LLM outputs "Final Answer"
+    Improvements:
+    - 5 tools (vs 3 in v1)
+    - Better JSON parsing (handles markdown blocks)
+    - Improved system prompt
+    - Retry mechanism for parsing failures
     """
     
-    def __init__(self, provider: str = "openai", max_steps: int = 10):
-        """Initialize agent with tools"""
+    def __init__(self, provider: str = "openai", max_steps: int = 5):
+        """Initialize agent with all 5 tools"""
         self.provider_name = provider
         self.max_steps = max_steps
         self.logger = Logger()
+        self.tool_failure_count = 0  # Track consecutive tool failures
         
         # Initialize LLM
         if provider == "openai":
@@ -61,11 +67,13 @@ class ReActAgent:
         else:
             raise ValueError(f"Provider {provider} not supported")
         
-        # Initialize tools
+        # Initialize ALL 5 tools
         self.tools = {
             "search_learning_material": SearchLearningMaterial(),
             "get_course_policy": GetCoursePolicy(),
             "calculate_grade_penalty": CalculateGradePenalty(),
+            "create_code_example": CreateCodeExample(),
+            "create_learning_roadmap": CreateLearningRoadmap(),
         }
         
         # Tool descriptions for system prompt
@@ -80,45 +88,67 @@ class ReActAgent:
         return "\n".join(descriptions)
     
     def _build_system_prompt(self) -> str:
-        """Build system prompt with ReAct instructions"""
+        """Build enhanced system prompt with fallback instructions"""
         return f"""Bạn là một AI Teaching Assistant thông minh cho khóa học Lập trình C.
 
-Bạn có quyền truy cập vào các công cụ (tools) sau:
+📚 AVAILABLE TOOLS (5 công cụ):
 {self.tool_descriptions}
 
-IMPORTANT: Bạn PHẢI sử dụng công cụ thích hợp để trả lời câu hỏi, đặc biệt đối với:
-- Tài liệu học tập → sử dụng search_learning_material
-- Quy định môn học → sử dụng get_course_policy
-- Tính điểm trừ → sử dụng calculate_grade_penalty
+⚡ CRITICAL INSTRUCTIONS:
+1. Analyze the question carefully to determine which tool(s) to use
+2. Output ONLY raw JSON (no markdown, no backticks, no extra text)
+3. Format: {{"action": "tool_name", "input": {{"param": "value"}}}}
+4. If question needs multiple steps, use one tool at a time then ask for next
+5. ALWAYS finish with "Final Answer:" when you have all information needed
+6. If tools fail to find data, you can FALLBACK to answer directly using your knowledge
+7. When fallback requested, provide "Final Answer:" with your best answer based on knowledge
 
-Hãy suy luận từng bước (Thought - Action - Observation):
+🔄 EXAMPLE FLOW:
+Question: "Tôi nộp muộn 2 ngày, bài tôi bị trừ mấy?"
+Response: {{"action": "get_course_policy", "input": {{"policy_type": "late_submission"}}}}
+(Tool returns penalty info)
+Final Answer: Bạn bị trừ 20% vì nộp trễ 2-3 ngày...
 
-1. **Thought**: Bạn suy nghĩ về câu hỏi và xác định cần dùng tool nào
-2. **Action**: Bạn gọi tool với format JSON sau:
-   {{"action": "tool_name", "input": {{"param1": "value1", "param2": "value2"}}}}
-3. **Observation**: Bạn nhận kết quả từ tool
-4. **Thought**: Lặp lại nếu cần thêm thông tin
-5. **Final Answer**: Khi bạn có đủ thông tin, output "Final Answer: " + câu trả lời chi tiết
+⚡ FALLBACK EXAMPLE:
+If tool can't find data:
+User: "Tools not helpful. Answer directly"
+Final Answer: Based on my knowledge about C programming, the best practice is...
 
-Luôn ghép nối các thông tin từ tools lại với nhau một cách hợp lý.
-Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại sao không thể trả lời."""
+GOLDEN RULES:
+✓ Output JSON on first line only
+✓ Use "Final Answer:" to conclude
+✓ Don't explain before taking action
+✓ Keep JSON clean and valid
+✓ Fallback mode: Direct answer without tools"""
     
     def _parse_action(self, text: str) -> Optional[Dict[str, Any]]:
         """
-        Parse action from LLM output
-        Looks for JSON format: {"action": "tool_name", "input": {...}}
+        Enhanced JSON parser - handles markdown blocks better
         """
-        # First, try to parse the entire response as JSON
+        # Clean up text first
+        text = text.strip()
+        
+        # Method 1: Try parsing whole response as JSON
         try:
-            data = json.loads(text.strip())
+            data = json.loads(text)
             if "action" in data and "input" in data:
                 return data
         except json.JSONDecodeError:
             pass
         
-        # Try to find JSON in the text
-        json_matches = re.findall(r'\{[^{}]*"action"[^{}]*\}', text, re.DOTALL)
+        # Method 2: Extract JSON from markdown code blocks
+        markdown_json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text, re.DOTALL)
+        if markdown_json_match:
+            try:
+                json_str = markdown_json_match.group(1)
+                data = json.loads(json_str)
+                if "action" in data and "input" in data:
+                    return data
+            except json.JSONDecodeError:
+                pass
         
+        # Method 3: Find raw JSON object
+        json_matches = re.findall(r'\{[^{}]*"action"[^{}]*\}', text, re.DOTALL)
         for json_str in json_matches:
             try:
                 action = json.loads(json_str)
@@ -127,10 +157,13 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
             except json.JSONDecodeError:
                 continue
         
-        # Try a more flexible regex for nested JSON
-        json_matches = re.findall(r'\{.*?"action".*?\}', text, re.DOTALL)
+        # Method 4: More flexible regex for nested JSON
+        json_pattern = r'\{(?:[^{}]|(?:\{[^{}]*\}))*"action"(?:[^{}]|(?:\{[^{}]*\}))*\}'
+        json_matches = re.findall(json_pattern, text, re.DOTALL)
         for json_str in json_matches:
             try:
+                # Clean potential issues
+                json_str = json_str.replace('\n', ' ').replace('\\n', ' ')
                 action = json.loads(json_str)
                 if "action" in action and "input" in action:
                     return action
@@ -139,27 +172,35 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
         
         return None
     
-    def _execute_tool(self, tool_name: str, tool_input: Dict[str, Any]) -> str:
-        """
-        Execute a tool and return the result as string
-        """
+    def _execute_tool(self, tool_name: str, tool_input: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute a tool and return result as dict"""
         if tool_name not in self.tools:
-            return json.dumps({
+            return {
                 "success": False,
-                "error": f"Tool '{tool_name}' không tồn tại"
-            }, ensure_ascii=False)
+                "error": f"Tool '{tool_name}' không tồn tại. Các tools có sẵn: {list(self.tools.keys())}",
+                "tool_not_found": True
+            }
         
         tool = self.tools[tool_name]
         
         try:
             # Execute tool with all input parameters
             result = tool.execute(**tool_input)
-            return result
+            result_dict = json.loads(result) if isinstance(result, str) else result
+            return result_dict
         except Exception as e:
-            return json.dumps({
+            return {
                 "success": False,
                 "error": str(e)
-            }, ensure_ascii=False)
+            }
+    
+    def _is_tool_failure(self, tool_result: Dict[str, Any]) -> bool:
+        """Check if tool failed or couldn't find data"""
+        return (
+            tool_result.get("success") == False 
+            or "error" in tool_result
+            or "not found" in str(tool_result).lower()
+        )
     
     def _is_final_answer(self, text: str) -> bool:
         """Check if LLM has provided final answer"""
@@ -167,7 +208,6 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
     
     def _extract_final_answer(self, text: str) -> str:
         """Extract final answer from LLM output"""
-        # Find "Final Answer:" and get everything after it
         match = re.search(r'final answer:\s*(.*?)(?:$)', text, re.IGNORECASE | re.DOTALL)
         if match:
             return match.group(1).strip()
@@ -175,28 +215,18 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
     
     def run(self, user_query: str) -> Dict[str, Any]:
         """
-        Run the ReAct agent loop
-        
-        Returns:
-        {
-            "success": bool,
-            "query": str,
-            "answer": str,
-            "steps": int,
-            "total_latency_ms": int,
-            "total_tokens": int,
-            "trace": [...]  # All reasoning steps
-        }
+        Run the enhanced ReAct agent loop with 5 tools
         """
         start_time = time.time()
         
         # Log request
         self.logger.log_event({
-            "event": "AGENT_REQUEST",
+            "event": "AGENT_V2_REQUEST",
             "timestamp": datetime.now().isoformat(),
             "query": user_query,
             "provider": self.provider_name,
-            "max_steps": self.max_steps
+            "max_steps": self.max_steps,
+            "tools_available": list(self.tools.keys())
         })
         
         # Initialize
@@ -205,9 +235,12 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
         total_tokens = 0
         total_latency = 0
         conversation_prompt = ""
+        parse_error_count = 0
+        tool_failure_count = 0
+        fallback_triggered = False  # Track if we've triggered fallback mode
         
         print(f"\n{'='*90}")
-        print(f"🤖 AGENT v1 - REASONING LOOP")
+        print(f"🤖 AGENT v2 - ENHANCED REASONING (5 Tools)")
         print(f"{'='*90}")
         print(f"❓ Query: {user_query}\n")
         
@@ -237,7 +270,7 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                 response_preview = llm_response[:250] + "..." if len(llm_response) > 250 else llm_response
                 print(f"{response_preview}")
                 
-                # Check if final answer
+                # Check if final answer first
                 if self._is_final_answer(llm_response):
                     final_answer = self._extract_final_answer(llm_response)
                     
@@ -253,9 +286,10 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                     
                     # Log success
                     self.logger.log_event({
-                        "event": "AGENT_SUCCESS",
+                        "event": "AGENT_V2_SUCCESS",
                         "timestamp": datetime.now().isoformat(),
                         "steps": loop_count,
+                        "parse_errors": parse_error_count,
                         "answer": final_answer[:100] + "..."
                     })
                     
@@ -268,16 +302,18 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                         "steps": loop_count,
                         "total_latency_ms": total_time,
                         "total_tokens": total_tokens,
+                        "parse_errors": parse_error_count,
                         "trace": trace,
-                        "type": "AGENT_v1"
+                        "type": "AGENT_v2"
                     }
                 
-                # Parse action
+                # Parse action with improved parser
                 action = self._parse_action(llm_response)
                 
                 if not action:
                     # No valid action found
-                    print(f"⚠️  No valid action found. LLM response doesn't contain proper JSON action.")
+                    parse_error_count += 1
+                    print(f"⚠️  Parse Error #{parse_error_count}: No valid JSON action found.")
                     
                     trace.append({
                         "step": loop_count,
@@ -286,8 +322,13 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                         "latency_ms": int((time.time() - step_start) * 1000)
                     })
                     
-                    # Add LLM response and ask for retry
-                    conversation_prompt += f"\n\nAssistant: {llm_response}\n\nUser: Lỗi: Không tìm thấy action JSON hợp lệ. Vui lòng cung cấp action với format: {{\"action\": \"tool_name\", \"input\": {{...}}}}"
+                    if parse_error_count >= 3:
+                        # Give up after 3 parse errors
+                        print(f"\n❌ Too many parse errors. Asking LLM to provide answer directly.")
+                        conversation_prompt += f"\n\nAssistant: {llm_response}\n\nUser: Lỗi parse action JSON! Hãy cung cấp 'Final Answer:' với câu trả lời trực tiếp."
+                    else:
+                        # Ask for retry
+                        conversation_prompt += f"\n\nAssistant: {llm_response}\n\nUser: Lỗi: Hãy output JSON action với format: {{\"action\": \"tool_name\", \"input\": {{...}}}}"
                     
                     continue
                 
@@ -298,11 +339,20 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                 print(f"🔧 Action: {tool_name}")
                 print(f"   Input: {tool_input}")
                 
-                observation = self._execute_tool(tool_name, tool_input)
+                tool_result = self._execute_tool(tool_name, tool_input)
+                observation = json.dumps(tool_result, ensure_ascii=False)
                 
                 obs_preview = observation[:200] + "..." if len(observation) > 200 else observation
                 print(f"👁️  Observation:")
                 print(f"{obs_preview}")
+                
+                # Check if tool failed
+                is_failure = self._is_tool_failure(tool_result)
+                if is_failure:
+                    tool_failure_count += 1
+                    print(f"⚠️  Tool failure #{tool_failure_count}")
+                else:
+                    tool_failure_count = 0  # Reset on success
                 
                 trace.append({
                     "step": loop_count,
@@ -313,14 +363,24 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                     "latency_ms": int((time.time() - step_start) * 1000)
                 })
                 
-                # Add to conversation
-                conversation_prompt += f"\n\nAssistant: {llm_response}\n\nObservation từ tool {tool_name}:\n{observation}"
+                # FALLBACK MECHANISM: If too many tool failures OR near max steps
+                # Ask LLM to answer directly without more tools
+                if (tool_failure_count >= 2 or loop_count >= self.max_steps - 1) and not fallback_triggered:
+                    fallback_triggered = True
+                    print(f"\n🔄 FALLBACK TRIGGERED: Tools not helpful. Asking LLM for direct answer...\n")
+                    
+                    conversation_prompt += f"\n\nAssistant: {llm_response}\n\nObservation từ tool {tool_name}:\n{observation}"
+                    conversation_prompt += f"\n\nUser: Các tools không tìm được dữ liệu liên quan. Hãy trả lời trực tiếp dựa trên kiến thức của bạn. Cung cấp 'Final Answer:' với câu trả lời hoàn chỉnh."
+                else:
+                    # Normal flow: add observation and continue
+                    conversation_prompt += f"\n\nAssistant: {llm_response}\n\nObservation từ tool {tool_name}:\n{observation}"
             
             # Max steps reached
             self.logger.log_event({
-                "event": "AGENT_MAX_STEPS_REACHED",
+                "event": "AGENT_V2_MAX_STEPS",
                 "timestamp": datetime.now().isoformat(),
-                "max_steps": self.max_steps
+                "max_steps": self.max_steps,
+                "parse_errors": parse_error_count
             })
             
             return {
@@ -328,18 +388,20 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                 "query": user_query,
                 "error": f"Agent reached max steps ({self.max_steps}) without providing final answer",
                 "steps": loop_count,
+                "parse_errors": parse_error_count,
                 "total_latency_ms": int((time.time() - start_time) * 1000),
                 "total_tokens": total_tokens,
                 "trace": trace,
-                "type": "AGENT_v1"
+                "type": "AGENT_v2"
             }
         
         except Exception as e:
             self.logger.log_event({
-                "event": "AGENT_ERROR",
+                "event": "AGENT_V2_ERROR",
                 "timestamp": datetime.now().isoformat(),
                 "error": str(e),
-                "steps": loop_count
+                "steps": loop_count,
+                "parse_errors": parse_error_count
             })
             
             return {
@@ -347,8 +409,9 @@ Nếu tool trả về lỗi, hãy thử cách khác hoặc giải thích tại s
                 "query": user_query,
                 "error": str(e),
                 "steps": loop_count,
+                "parse_errors": parse_error_count,
                 "total_latency_ms": int((time.time() - start_time) * 1000),
                 "total_tokens": total_tokens,
                 "trace": trace,
-                "type": "AGENT_v1"
+                "type": "AGENT_v2"
             }
