@@ -4,21 +4,6 @@ from typing import Dict, Any
 
 
 def get_course_policy(policy_type: str) -> Dict[str, Any]:
-    """
-    Lấy quy định của môn học từ quy_dinh_mon_hoc.json
-    Trả lời câu hỏi về deadline, scoring, attendance, etc.
-
-    Parameter:
-    - policy_type: str (e.g., "deadline", "scoring", "late_submission", "grading")
-
-    Output:
-    {
-        "success": bool,
-        "policy_type": str,
-        "description": str,
-        "details": str
-    }
-    """
     try:
         # Load the JSON file
         json_path = os.path.join(os.path.dirname(__file__), '..', '..', 'quy_dinh_mon_hoc.json')
@@ -63,3 +48,18 @@ def get_course_policy(policy_type: str) -> Dict[str, Any]:
             "description": "",
             "details": f"Unexpected error: {str(e)}"
         }
+    """
+    Lấy quy định của môn học từ file quy_dinh_mon_hoc.json
+    Trả lời câu hỏi về deadline, scoring, attendance, etc.
+
+    Parameter:
+    - policy_type: str (e.g., "deadline", "scoring", "late_submission", "grading")
+
+    Output:
+    {
+        "success": bool,
+        "policy_type": str,
+        "description": str,
+        "details": str
+    }
+    """

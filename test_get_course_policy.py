@@ -6,7 +6,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from agent.agent import get_course_policy
 from telemetry.logger import logger
 
-
 # Test the function
 print("Testing get_course_policy function:")
 
